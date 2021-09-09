@@ -44,4 +44,16 @@ describe('#Routes test suite', () => {
     })
   })
 
+  test('it should set any request with CORS enabled', async () => {
+    const routes = new Routes()
+    const params = {
+        ...defaultParams
+    }
+
+    params.request.method = 'inexistent'
+    await routes.handler(...params.values())
+    expect(params.response.setHeader)
+        .toHaveBeenCalledWith('Access-Control-Allow-Origin', '*')
+  })
+
 });
