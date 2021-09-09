@@ -56,4 +56,16 @@ describe('#Routes test suite', () => {
         .toHaveBeenCalledWith('Access-Control-Allow-Origin', '*')
   })
 
+  test('given method OPTIONS it should choose options route', async () => {
+    const routes = new Routes()
+    const params = {
+        ...defaultParams
+    }
+
+    params.request.method = 'OPTIONS'
+    await routes.handler(...params.values())
+    expect(params.response.writeHead).toHaveBeenCalledWith(204)
+    expect(params.response.end).toHaveBeenCalled()
+  })
+
 });
