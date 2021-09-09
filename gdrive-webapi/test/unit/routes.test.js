@@ -79,7 +79,18 @@ describe('#Routes test suite', () => {
 
     await routes.handler(...params.values())
     expect(routes.post).toHaveBeenCalled()
+  })
 
+  test('given method GET it should choose get route', async () => {
+    const routes = new Routes()
+    const params = {
+        ...defaultParams
+    }
+    jest.spyOn(routes, routes.get.name).mockResolvedValue()
+
+    params.request.method = 'GET'
+    await routes.handler(...params.values())
+    expect(routes.get).toHaveBeenCalled()
   })
 
 });
