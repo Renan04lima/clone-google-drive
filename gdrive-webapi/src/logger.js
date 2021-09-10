@@ -7,4 +7,4 @@ const logger = pino({
 
 export {
     logger,
-} 
+}
