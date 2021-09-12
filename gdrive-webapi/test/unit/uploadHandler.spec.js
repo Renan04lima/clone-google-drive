@@ -136,5 +136,21 @@ describe('#UploadHandler test suite', () => {
 
     })
 
+    test('should return false when time isnt later than specified delay', () => {
+      const timerDelay = 3000
+      const uploadHandler = new UploadHandler({
+        io: {},
+        socketId: '',
+        messageTimeDelay: timerDelay
+      })
+
+      const now = TestUtil.getTimeFromDate('2021-07-01 00:00:02')
+      TestUtil.mockDateNow([now])
+
+      const lastExecution = TestUtil.getTimeFromDate('2021-07-01 00:00:01')
+
+      const result = uploadHandler.canExecute(lastExecution)
+      expect(result).toBeFalsy()
+    })
   })
 })
