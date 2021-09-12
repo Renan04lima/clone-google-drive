@@ -13,4 +13,31 @@ export default class TestUtil {
             }
         })
     }
+
+  static generateWritableStream(onData) {
+    return new Writable({
+      objectMode: true,
+      write(chunk, encondig, cb) {
+        onData(chunk)
+
+        cb(null, chunk)
+      }
+    })
+  }
+
+  static generateTransformStream(onData) {
+    // async function *(source) {
+    //     for await(const chunk of data) {
+    //          yield chunk   
+    //     }
+    // }
+
+    return new Transform({
+      objectMode: true,
+      transform(chunk, enconding, cb) {
+        onData(chunk)
+        cb(null, chunk)
+      }
+    })
+  }
 }
