@@ -18,87 +18,79 @@ describe('#Routes test suite', () => {
     values: () => Object.values(defaultParams)
   }
 
+  const makeSut = () => {
+    const sut = new Routes()
+    const params = {
+      ...defaultParams
+    }
+    const ioObj = {
+      to: (id) => ioObj,
+      emit: (event, message) => { }
+    }
+
+    return { sut, params, ioObj }
+  }
+
+
   describe('#setSocketInstance', () => {
     test('setSocket should store io instance', () => {
-      const routes = new Routes()
-      const ioObj = {
-        to: (id) => ioObj,
-        emit: (event, message) => { }
-      }
+      const { sut, ioObj } = makeSut()
 
-      routes.setSocketInstance(ioObj)
-      expect(routes.io).toStrictEqual(ioObj)
+      sut.setSocketInstance(ioObj)
+      expect(sut.io).toStrictEqual(ioObj)
     })
   })
 
   describe('#handler', () => {
     test('given an inexistent route it should choose default route', async () => {
-      const routes = new Routes()
-      const params = {
-        ...defaultParams
-      }
+      const { sut, params } = makeSut()
 
       params.request.method = 'inexistent'
-      await routes.handler(...params.values())
+      await sut.handler(...params.values())
       expect(params.response.end).toHaveBeenCalledWith('hello world')
     })
 
     test('it should set any request with CORS enabled', async () => {
-      const routes = new Routes()
-      const params = {
-        ...defaultParams
-      }
+      const { sut, params } = makeSut()
 
       params.request.method = 'inexistent'
-      await routes.handler(...params.values())
+      await sut.handler(...params.values())
       expect(params.response.setHeader)
         .toHaveBeenCalledWith('Access-Control-Allow-Origin', '*')
     })
 
     test('given method OPTIONS it should choose options route', async () => {
-      const routes = new Routes()
-      const params = {
-        ...defaultParams
-      }
+      const { sut, params } = makeSut()
 
       params.request.method = 'OPTIONS'
-      await routes.handler(...params.values())
+      await sut.handler(...params.values())
       expect(params.response.writeHead).toHaveBeenCalledWith(204)
       expect(params.response.end).toHaveBeenCalled()
     })
 
     test('given method POST it should choose post route', async () => {
-      const routes = new Routes()
-      const params = {
-        ...defaultParams
-      }
+      const { sut, params } = makeSut()
 
       params.request.method = 'POST'
-      jest.spyOn(routes, routes.post.name).mockResolvedValue()
+      jest.spyOn(sut, sut.post.name).mockResolvedValue()
 
-      await routes.handler(...params.values())
-      expect(routes.post).toHaveBeenCalled()
+      await sut.handler(...params.values())
+      expect(sut.post).toHaveBeenCalled()
     })
 
     test('given method GET it should choose get route', async () => {
-      const routes = new Routes()
-      const params = {
-        ...defaultParams
-      }
-      jest.spyOn(routes, routes.get.name).mockResolvedValue()
+      const { sut, params } = makeSut()
+      jest.spyOn(sut, sut.get.name).mockResolvedValue()
 
       params.request.method = 'GET'
-      await routes.handler(...params.values())
-      expect(routes.get).toHaveBeenCalled()
+      await sut.handler(...params.values())
+      expect(sut.get).toHaveBeenCalled()
     })
   })
 
   describe('#get', () => {
     test('given method GET it should list all files downloaded', async () => {
-      const routes = new Routes()
-      const params = {
-        ...defaultParams
-      }
+      const { sut, params } = makeSut()
 
       const filesStatusesMock = [
         {
@@ -108,11 +100,11 @@ describe('#Routes test suite', () => {
           file: 'file.txt'
         }
       ]
-      jest.spyOn(routes.fileHelper, routes.fileHelper.getFilesStatus.name)
+      jest.spyOn(sut.fileHelper, sut.fileHelper.getFilesStatus.name)
         .mockResolvedValue(filesStatusesMock)
 
       params.request.method = 'GET'
-      await routes.handler(...params.values())
+      await sut.handler(...params.values())
 
 
       expect(params.response.writeHead).toHaveBeenCalledWith(200)
