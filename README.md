@@ -20,7 +20,7 @@
     - [x] Deve atingir 100% de cobertura de código em testes
 
 - Web App 
-    - [ ] Deve listar arquivos baixados
+    - [x] Deve listar arquivos baixados
     - [ ] Deve permitir fazer upload de arquivos de qualquer tamanho
     - [ ] Deve ter função de upload via botão
     - [ ] Deve exibir progresso de upload 
