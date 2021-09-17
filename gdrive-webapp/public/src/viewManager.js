@@ -14,6 +14,10 @@ export default class ViewManager {
         })
     }
 
+    configureOnFileChange(fn) {
+        this.fileElem.onchange = (e) => fn(e.target.files)
+    }
+
     configureFileBtnClick() {
         this.newFileBtn.onclick = () => this.fileElem.click()
     }
